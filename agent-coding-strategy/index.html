@@ -7,7 +7,7 @@
   <meta property="og:title" content="代码数据策略｜2024 → Agentic Coding">
   <meta property="og:description" content="从代码生成正确率，到在真实环境中可靠完成工程任务。">
   <title>代码数据策略｜2024 → Agentic Coding</title>
-  <link rel="stylesheet" href="../strategy.css">
+  <link rel="stylesheet" href="../strategy.css?v=20260918-2">
 </head>
 <body>
 <div class="layout">
@@ -18,9 +18,10 @@
       <a href="#thesis"><b>01</b>策略判断</a>
       <a href="#baseline"><b>02</b>2024 数据策略</a>
       <a href="#migration"><b>03</b>能力迁移</a>
-      <a href="#portfolio"><b>04</b>Agent 数据组合</a>
-      <a href="#pipeline"><b>05</b>生产与质检</a>
-      <a href="#training"><b>06</b>训练与评测</a>
+      <a href="#recipe"><b>04</b>具体构造策略</a>
+      <a href="#portfolio"><b>05</b>Agent 数据组合</a>
+      <a href="#pipeline"><b>06</b>生产与质检</a>
+      <a href="#training"><b>07</b>训练与评测</a>
     </nav>
     <p class="side-note">候选人补充方案<br>基于公开信息的策略推演，不代表阶跃星辰内部训练路线。</p>
   </aside>
@@ -81,8 +82,72 @@
       <div class="data-contract"><span>NEW DATA CONTRACT</span><div><b>task</b><i>+</i><b>repo_snapshot</b><i>+</i><b>environment</b><i>+</i><b>trajectory</b><i>+</i><b>verifier</b><i>+</i><b>outcome</b><i>+</i><b>lineage</b></div><p>只有七个对象完整绑定，样本才能被稳定复现、归因、训练与回归。</p></div>
     </section>
 
+    <section class="section" id="recipe">
+      <div class="heading"><div><span class="eyebrow">04 · CONCRETE DATA RECIPE</span><h2>Agent Coding数据到底怎么造</h2></div><p>策略不是“多收集轨迹”，而是从能力缺口出发，把真实工程任务改造成可复现、可对照、可验证的训练信号。</p></div>
+
+      <div class="recipe-table">
+        <div class="recipe-row recipe-head"><b>能力切片</b><b>任务构造方法</b><b>正负监督信号</b><b>Verifier与训练出口</b></div>
+        <article class="recipe-row">
+          <div><span>01</span><h3>仓库检索与定位</h3><small>找对文件、符号和依赖</small></div>
+          <p>从已合并Issue/PR抽种子，将仓库回退至修改前Commit，只暴露Issue与必要约束，隐藏原Patch；用实际改动文件和调用链生成Gold Evidence。</p>
+          <p><strong>正：</strong>关键文件召回充分、上下文精简。<br><em>负：</em>定位错文件、漏依赖、无关读取过多。</p>
+          <p><b>验证：</b>Evidence Recall、编辑范围、最终测试。<br><i>SFT示范 + DPO检索偏好</i></p>
+        </article>
+        <article class="recipe-row">
+          <div><span>02</span><h3>工具调用与状态跟踪</h3><small>会选工具，也会读结果</small></div>
+          <p>选取必须经过Search、Build、Test、API或MCP才能完成的任务；固定工具Schema与初始状态，记录每次Observation、参数、返回值和状态变化。</p>
+          <p><strong>正：</strong>参数合法、顺序合理、根据返回结果推进。<br><em>负：</em>Schema错误、重复调用、忽略报错或状态已变。</p>
+          <p><b>验证：</b>Schema校验、状态机、工具结果一致性。<br><i>SFT + 局部决策DPO</i></p>
+        </article>
+        <article class="recipe-row">
+          <div><span>03</span><h3>跨文件工程修改</h3><small>不是只写一个函数</small></div>
+          <p>从真实Bug修复、功能PR、依赖升级和重构中生成任务；冻结仓库镜像，隐藏部分测试，将测试目录设为只读并限制允许修改的文件范围。</p>
+          <p><strong>正：</strong>最小充分Patch，全量回归通过。<br><em>负：</em>改测试、硬编码、扩大改动或制造副作用。</p>
+          <p><b>验证：</b>目标测试 + 隐藏测试 + Diff Policy。<br><i>SFT成功轨迹 + RLVR任务</i></p>
+        </article>
+        <article class="recipe-row">
+          <div><span>04</span><h3>失败诊断与恢复</h3><small>长链任务的核心增量</small></div>
+          <p>在固定步骤注入编译失败、测试失败、工具超时、权限不足、错误依赖或错误假设；同一任务采样“恢复成功”和“重复失败”两类轨迹。</p>
+          <p><strong>正：</strong>识别原因、更新假设、回退并重规划。<br><em>负：</em>盲目重试、无效循环、状态丢失。</p>
+          <p><b>验证：</b>故障识别率、恢复成功率、循环率。<br><i>SFT恢复示范 + DPO/RLVR</i></p>
+        </article>
+        <article class="recipe-row">
+          <div><span>05</span><h3>长程规划与约束</h3><small>多阶段完成而非一次生成</small></div>
+          <p>构造需要“理解需求—定位—修改—测试—复核”的多阶段任务，并加入禁止项、时间/Token预算、审批边界和中间里程碑。</p>
+          <p><strong>正：</strong>计划随证据更新，关键约束全程保持。<br><em>负：</em>计划与执行脱节、提前结束或越权。</p>
+          <p><b>验证：</b>里程碑状态、约束遵循、端到端完成率。<br><i>课程SFT + 可验证RLVR</i></p>
+        </article>
+        <article class="recipe-row">
+          <div><span>06</span><h3>视觉与前端任务</h3><small>把“看起来对”变成可判定</small></div>
+          <p>以设计稿、页面截图、交互说明和现有前端仓库组成任务包；设置多视口、关键交互、可访问性和视觉回归基线。</p>
+          <p><strong>正：</strong>结构、视觉、交互与工程约束同时满足。<br><em>负：</em>只拟合截图、交互失效或破坏响应式。</p>
+          <p><b>验证：</b>DOM/交互测试 + Visual Diff + A11y。<br><i>SFT + 多目标RLVR</i></p>
+        </article>
+      </div>
+
+      <div class="recipe-operating">
+        <div class="operating-copy"><span class="eyebrow">ONE ITERATION</span><h3>一轮数据策略如何落地</h3><p>每轮只解决一个可衡量的能力缺口，以对照实验决定扩量，而不是先设大规模生产目标。</p></div>
+        <ol>
+          <li><b>定切片</b><span>基线评测找Top失败类型，定义成功、失败与停止条件。</span></li>
+          <li><b>造任务</b><span>抽取真实种子，冻结Repo/环境，构建独立Verifier。</span></li>
+          <li><b>采轨迹</b><span>跨模型、温度和Agent框架Rollout，保留成功、恢复与失败。</span></li>
+          <li><b>做配对</b><span>控制任务与环境不变，只保留单一关键决策差异。</span></li>
+          <li><b>训与验</b><span>按缺陷路由SFT/DPO/RLVR，并同时看专项、通用与成本。</span></li>
+          <li><b>调配比</b><span>根据单位千条有效轨迹的能力增益决定扩量、改写或停止。</span></li>
+        </ol>
+      </div>
+
+      <div class="trajectory-mix">
+        <div><span><b>40%</b>直接成功轨迹</span><small>压缩冗余步骤，作为SFT行为范式</small></div>
+        <div><span><b>25%</b>失败后恢复成功</span><small>保留诊断—重规划—验证的关键转折</small></div>
+        <div><span><b>20%</b>同任务偏好对</span><small>只比较一个可归因的局部决策</small></div>
+        <div><span><b>15%</b>诊断型困难负例</span><small>进入DPO、Critic或回归集，不直接模仿</small></div>
+      </div>
+      <p class="ratio-note">以上是同一能力桶内的首轮轨迹用途配比，与下一节“任务类型组合”是两个维度；前者决定怎么学，后者决定学什么。比例只作为消融起点。</p>
+    </section>
+
     <section class="section" id="portfolio">
-      <div class="heading"><div><span class="eyebrow">04 · STEP AGENT PORTFOLIO</span><h2>面向阶跃 Agent Coding 的首轮数据组合</h2></div><p>公开信号显示，阶跃当前重点覆盖长上下文、高可靠工具调用、长程编排、多模态理解与高吞吐生产任务。数据组合应围绕这些能力建立可验证任务，而不是单纯堆积长CoT。</p></div>
+      <div class="heading"><div><span class="eyebrow">05 · STEP AGENT PORTFOLIO</span><h2>面向阶跃 Agent Coding 的首轮数据组合</h2></div><p>公开信号显示，阶跃当前重点覆盖长上下文、高可靠工具调用、长程编排、多模态理解与高吞吐生产任务。数据组合应围绕这些能力建立可验证任务，而不是单纯堆积长CoT。</p></div>
       <div class="portfolio">
         <article><span>30%</span><h3>仓库级工程任务</h3><p>Issue → 定位 → 跨文件修改 → 测试通过；覆盖Bug修复、功能开发、依赖升级和重构。</p><small>SWE-like · Multi-file · Patch</small></article>
         <article><span>20%</span><h3>终端与工具任务</h3><p>构建、部署、数据处理、脚本编排、API与MCP调用，强调Schema正确和状态一致。</p><small>Terminal · Tool Use · MCP</small></article>
@@ -95,7 +160,7 @@
     </section>
 
     <section class="section" id="pipeline">
-      <div class="heading"><div><span class="eyebrow">05 · DATA FACTORY</span><h2>从任务种子到可训练资产的八道门</h2></div><p>数据管线的核心价值，是让任务真的可做、结果真的可判、轨迹真的可学，并保留每次筛选和改写的血缘。</p></div>
+      <div class="heading"><div><span class="eyebrow">06 · DATA FACTORY</span><h2>从任务种子到可训练资产的八道门</h2></div><p>数据管线的核心价值，是让任务真的可做、结果真的可判、轨迹真的可学，并保留每次筛选和改写的血缘。</p></div>
       <div class="factory">
         <article data-n="01"><h3>任务种子</h3><p>真实Issue/PR、终端任务、产品Case与定向合成。</p><small>输出：Task Spec</small></article>
         <article data-n="02"><h3>环境固化</h3><p>锁定Commit、依赖、镜像、权限、工具版本和初始状态。</p><small>门槛：复现率 ≥ 95%</small></article>
@@ -117,7 +182,7 @@
     </section>
 
     <section class="section" id="training">
-      <div class="heading"><div><span class="eyebrow">06 · TRAINING &amp; EVALUATION</span><h2>先判断缺陷，再选择训练出口</h2></div><p>同一个失败现象可能来自模型、数据、Agent框架或运行环境。训练方案必须由因果证据决定，不能把所有Bad Case都改写成SFT。</p></div>
+      <div class="heading"><div><span class="eyebrow">07 · TRAINING &amp; EVALUATION</span><h2>先判断缺陷，再选择训练出口</h2></div><p>同一个失败现象可能来自模型、数据、Agent框架或运行环境。训练方案必须由因果证据决定，不能把所有Bad Case都改写成SFT。</p></div>
       <div class="routing">
         <article><span>知识与代码分布缺口</span><h3>继续预训练</h3><p>新框架、低资源语言、仓库结构和领域代码覆盖不足。</p><b>看：困惑度 / 补全 / 语言切片</b></article>
         <article><span>正确行为范式缺失</span><h3>SFT</h3><p>稳定、高质量、可复现的规划、工具使用与失败恢复示范。</p><b>看：模仿后专项成功率</b></article>
