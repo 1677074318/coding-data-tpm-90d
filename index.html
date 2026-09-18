@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="李丹：Coding 数据管线 TPM 的 90 天工作设想，从 Bad Case 到可验证的数据飞轮。">
+  <title>Coding 数据管线 TPM｜90 天工作设想</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reading-progress" aria-hidden="true"><span id="progressBar"></span></div>
+  <header class="nav-shell">
+    <a class="brand" href="#top" aria-label="返回顶部">
+      <span class="brand-mark">LD</span>
+      <span><b>Coding Data TPM</b><small>90-Day Operating Plan</small></span>
+    </a>
+    <nav aria-label="页面导航">
+      <a href="#strategy">策略</a><a href="#pipeline">管线</a><a href="#roadmap">90 天</a><a href="#metrics">指标</a>
+    </nav>
+    <a class="nav-cta" href="#closing">核心结论 ↘</a>
+  </header>
+
+  <main id="top">
+    <section class="hero section-grid">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="pulse"></span> CANDIDATE WORKING PROPOSAL · V1.0</div>
+        <h1>从 Bad Case 到<br><span>可验证的数据飞轮</span></h1>
+        <p class="hero-lead">Coding 数据管线 TPM 的 90 天工作设想：以模型能力提升为目标，把算法需求转化为可生产、可验证、可追溯的数据产品。</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#roadmap">查看 30 / 60 / 90 天计划</a>
+          <a class="button secondary" href="#case">查看归因闭环</a>
+        </div>
+        <div class="author-line"><span>李丹</span><i></i><span>算法 TPM · Coding 数据管线方向</span><i></i><span>2026.09</span></div>
+      </div>
+
+      <div class="hero-visual reveal" aria-label="数据飞轮示意图">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="core"><small>North Star</small><strong>模型能力<br>可验证提升</strong></div>
+        <div class="orbit-node n1"><b>01</b><span>Strategy<br>能力定义</span></div>
+        <div class="orbit-node n2"><b>02</b><span>Pipeline<br>规模生产</span></div>
+        <div class="orbit-node n3"><b>03</b><span>Quality<br>证据门禁</span></div>
+        <div class="orbit-node n4"><b>04</b><span>Benchmark<br>持续回归</span></div>
+      </div>
+    </section>
+
+    <section class="signal-strip reveal" aria-label="方案核心数字">
+      <div><strong>90</strong><span>天完成最小闭环</span></div>
+      <div><strong>6</strong><span>类统一数据对象</span></div>
+      <div><strong>4</strong><span>层 Bad Case 门禁</span></div>
+      <div><strong>2</strong><span>层 Benchmark</span></div>
+      <div><strong>1</strong><span>个可复制试点</span></div>
+    </section>
+
+    <section class="section" id="strategy">
+      <div class="section-heading reveal">
+        <div><span class="kicker">01 · ROLE & STRATEGY</span><h2>这个角色的核心，不是催进度</h2></div>
+        <p>它需要把“模型需要什么”翻译成“团队如何稳定生产”，并用独立评测证明每批数据是否真的产生增益。</p>
+      </div>
+      <div class="strategy-grid">
+        <article class="strategy-card reveal"><span>01</span><div class="icon">⌁</div><h3>数据策略</h3><p>从能力缺口出发，定义任务分层、数据来源、难度结构与训练信号。</p><ul><li>真实任务锚定分布</li><li>合成数据放大规模</li><li>Bad Case补充长尾</li></ul></article>
+        <article class="strategy-card reveal"><span>02</span><div class="icon">⬡</div><h3>环境工厂</h3><p>让仓库、依赖、工具、权限和初始状态可以冻结、拉起、回放与销毁。</p><ul><li>环境 ID 与快照</li><li>健康检查与失败分层</li><li>轨迹记录与重放</li></ul></article>
+        <article class="strategy-card reveal"><span>03</span><div class="icon">✓</div><h3>质量门禁</h3><p>用结构化 Reason Code 和独立验证器替代“看起来不错”的主观判断。</p><ul><li>Schema → 执行 → 语义</li><li>人工抽检与争议仲裁</li><li>安全与污染隔离</li></ul></article>
+        <article class="strategy-card reveal"><span>04</span><div class="icon">↻</div><h3>评测飞轮</h3><p>建立通用回归与专项能力双层 Benchmark，连接数据、训练和线上反馈。</p><ul><li>基座/历史/当前对照</li><li>训练前后同切片评测</li><li>退化定位与快速回滚</li></ul></article>
+      </div>
+    </section>
+
+    <section class="section evolution" id="pipeline">
+      <div class="section-heading reveal">
+        <div><span class="kicker">02 · PARADIGM SHIFT</span><h2>数据单元已经发生变化</h2></div>
+        <p>2023—2024 年重点是扩大正确答案覆盖；Agentic Coding 时代，重点是生产在真实环境中可执行、可证明、可恢复的轨迹。</p>
+      </div>
+      <div class="compare reveal">
+        <div class="compare-side legacy"><span class="year">2023—2024</span><h3>Answer-centric</h3><div class="formula">Instruction <b>→</b> Answer</div><p>语言与题型覆盖 · 代码补全 · FIM · 单测通过 · Pass@k</p></div>
+        <div class="shift-arrow"><span>范式迁移</span><b>→</b></div>
+        <div class="compare-side agentic"><span class="year">NOW</span><h3>Agentic & Verifiable</h3><div class="formula six"><i>Task</i><i>Environment</i><i>Context</i><i>Trajectory</i><i>Verifier</i><i>Outcome</i></div><p>仓库级任务 · 工具调用 · 长链规划 · 失败恢复 · 独立验证</p></div>
+      </div>
+
+      <div class="flow-board reveal" aria-label="目标数据管线">
+        <div class="flow-head"><div><span class="kicker">TARGET PIPELINE</span><h3>一条端到端的证据链</h3></div><span class="status"><i></i> Traceable by design</span></div>
+        <div class="flow">
+          <div class="flow-node"><b>01</b><strong>能力需求</strong><small>短板 / 用户需求 / Bad Case</small></div><em>→</em>
+          <div class="flow-node"><b>02</b><strong>任务与环境</strong><small>Task Spec / Snapshot</small></div><em>→</em>
+          <div class="flow-node"><b>03</b><strong>数据生成</strong><small>人工 / 规则 / 多模型 / 回流</small></div><em>→</em>
+          <div class="flow-node"><b>04</b><strong>质量门禁</strong><small>Auto QA / 抽检 / 仲裁</small></div><em>→</em>
+          <div class="flow-node"><b>05</b><strong>训练交付</strong><small>Version / Lineage / Dataset Card</small></div><em>→</em>
+          <div class="flow-node"><b>06</b><strong>评测回流</strong><small>Benchmark / 消融 / 新 Case</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section case-section" id="case">
+      <div class="section-heading reveal">
+        <div><span class="kicker">03 · BAD CASE WORKBENCH</span><h2>从经验判断，升级为可复验的因果证据</h2></div>
+        <p>用状态机、控制变量实验和证据门禁，让工程、算法、数据与评测在同一套事实基础上协作。</p>
+      </div>
+      <div class="case-grid">
+        <article class="case-story reveal">
+          <div class="case-tag">REAL CASE · ABSTRACTED</div>
+          <h3>相同触发条件导致<br>步骤节点混淆</h3>
+          <p>LLM 执行到特定节点后固定跳转。生产与本地配置对齐后稳定复现；通过 Prompt 消融与单变量实验，定位多个指令使用相同触发条件。改写为唯一状态表达后稳定恢复。</p>
+          <div class="case-result"><span>结论</span><strong>原始基座即存在缺陷 → 扩展能力矩阵 → 制定训练 Feature</strong></div>
+        </article>
+        <div class="gates reveal">
+          <div class="gate active"><span>G1</span><div><strong>稳定复现</strong><small>冻结环境 · Replay ID · 失败率</small></div><b>PASS</b></div>
+          <div class="gate active"><span>G2</span><div><strong>因果证据</strong><small>竞争假设 · 单变量消融 · 结果翻转</small></div><b>PASS</b></div>
+          <div class="gate active"><span>G3</span><div><strong>修复验证</strong><small>原 Case + 扩展 Case · 副作用检查</small></div><b>PASS</b></div>
+          <div class="gate active"><span>G4</span><div><strong>回归就绪</strong><small>能力标签 · 环境 · Verifier · 血缘</small></div><b>READY</b></div>
+        </div>
+      </div>
+      <div class="demo-strip reveal">
+        <span class="demo-label">RUNNABLE DEMO</span>
+        <div><strong>3</strong><small>Cases processed</small></div><i></i><div><strong>2</strong><small>Root-caused</small></div><i></i><div><strong>2</strong><small>Benchmark-ready</small></div><i></i><div><strong>1</strong><small>Blocked by evidence gate</small></div>
+        <span class="demo-note">标准库 Demo · Case → Experiment → Benchmark</span>
+      </div>
+    </section>
+
+    <section class="section roadmap-section" id="roadmap">
+      <div class="section-heading reveal">
+        <div><span class="kicker">04 · 30 / 60 / 90 DAYS</span><h2>先跑通，再产品化，最后规模化</h2></div>
+        <p>不追求一次性重建全部平台，而是用一个高价值 Coding 场景形成最小闭环，再沉淀可复制的标准、工具与机制。</p>
+      </div>
+      <div class="roadmap">
+        <article class="phase phase-one reveal"><div class="phase-top"><span>DAY 01—30</span><b>基线与共同语言</b></div><h3>选择正确的问题</h3><p>完成链路盘点、数据契约、质量基线和试点选择。</p><ul><li>利益相关方与现状流程图</li><li>Case Schema / Taxonomy / RACI</li><li>数据批次质量基线</li><li>P1 Case 与 Coding 试点</li></ul><div class="phase-outcome">OUTCOME <b>可信基线 + 60 天验收口径</b></div></article>
+        <article class="phase phase-two reveal"><div class="phase-top"><span>DAY 31—60</span><b>最小可行闭环</b></div><h3>证明链路能工作</h3><p>跑通环境、生成、质检、交付和专项评测。</p><ul><li>环境工厂 MVP 与稳定回放</li><li>Validator 插件与 Reason Code</li><li>首个训练数据批次</li><li>双层 Benchmark 与版本对照</li></ul><div class="phase-outcome">OUTCOME <b>可执行、可验证的数据流水线</b></div></article>
+        <article class="phase phase-three reveal"><div class="phase-top"><span>DAY 61—90</span><b>产品化与扩展</b></div><h3>让闭环可复制</h3><p>接入统一看板、发布门禁与真实任务回流。</p><ul><li>数据—训练—评测全链血缘</li><li>Release Gate / Dataset Card</li><li>第二类任务或语言扩展</li><li>Neo / Agent 真实任务切片</li></ul><div class="phase-outcome">OUTCOME <b>V1.0 管线 + 下一季度 Roadmap</b></div></article>
+      </div>
+    </section>
+
+    <section class="section metrics-section" id="metrics">
+      <div class="section-heading reveal">
+        <div><span class="kicker">05 · SUCCESS METRICS</span><h2>不以数据量作为唯一答案</h2></div>
+        <p>指标应在前两周基于现状校准；首版建议同时衡量质量、效率、可追溯性和模型边际增益。</p>
+      </div>
+      <div class="metric-layout">
+        <div class="metric-rings reveal">
+          <div class="ring-card"><div class="ring p100"><span><b>100%</b><small>数据可追溯</small></span></div><p>来源、环境、规则、版本记录完整</p></div>
+          <div class="ring-card"><div class="ring p95"><span><b>≥95%</b><small>环境复现率</small></span></div><p>试点任务能够稳定拉起与重放</p></div>
+          <div class="ring-card"><div class="ring p90"><span><b>≥90%</b><small>硬规则覆盖</small></span></div><p>高风险错误零容忍</p></div>
+        </div>
+        <div class="metric-bars reveal">
+          <h3>90 天验收建议</h3>
+          <div class="bar-row"><div><span>人工抽检合格率</span><b>≥95%</b></div><div class="bar"><i style="--w:95%"></i></div></div>
+          <div class="bar-row"><div><span>交付周期缩短</span><b>≥30%</b></div><div class="bar"><i style="--w:76%"></i></div></div>
+          <div class="bar-row"><div><span>P0/P1 闭环覆盖</span><b>100%</b></div><div class="bar"><i style="--w:100%"></i></div></div>
+          <div class="bar-row"><div><span>专项能力增益</span><b>统计可信</b></div><div class="bar"><i style="--w:86%"></i></div></div>
+          <p class="metric-footnote">扩大生产的依据：单位有效数据成本 × 模型边际增益 × 通用能力无显著退化</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing section" id="closing">
+      <div class="closing-card reveal">
+        <span class="kicker">THE STATE AFTER 90 DAYS</span>
+        <h2>让每一批数据都能回答<br>“为什么做、如何证明、带来什么改变”</h2>
+        <div class="closing-grid">
+          <p>为什么生产这批数据？<br><b>能力假设与优先级明确</b></p>
+          <p>如何证明它是好数据？<br><b>环境可复现、Verifier 独立</b></p>
+          <p>产生了什么模型影响？<br><b>版本对照、专项增益可追溯</b></p>
+          <p>出现退化如何处理？<br><b>快速定位、修复、回归与回滚</b></p>
+        </div>
+        <blockquote>TPM 的价值，是让决策有证据、交付可复现、问题可追溯，并使专家把时间投入真正需要专业判断的地方。</blockquote>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><b>李丹 · Coding Data Pipeline TPM</b><span>90-Day Working Proposal · 2026</span></div>
+    <p>本方案基于公开资料与候选人的方法论设想，实际落地以团队内部架构、数据权限与业务规划为准。</p>
+    <div class="sources"><a href="https://github.com/stepfun-ai" target="_blank" rel="noreferrer">StepFun Open Source ↗</a><a href="https://github.com/stepfun-ai/gelab-zero" target="_blank" rel="noreferrer">GELab-Zero ↗</a><a href="https://arxiv.org/abs/2310.06770" target="_blank" rel="noreferrer">SWE-bench ↗</a></div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
