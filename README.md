@@ -11,6 +11,12 @@
 
 这是无构建依赖的静态单页，可直接通过 GitHub Pages 发布。
 
+## 独立材料
+
+- `/badcase-workbench/`：Bad Case 工程化归因与验证闭环；
+- `/agent-coding-strategy/`：从百川阶段代码数据策略到 Step Agentic Coding 策略；
+- `/90-day-value/`：提前开放 HC 后的 30/60/90 天价值验证计划。
+
 ## 本地预览
 
 ```bash
