@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="李丹关于Coding数据管线TPM价值、Bad Case归因产品化与Agent Coding数据策略的简版工作设想。">
+  <title>Coding数据管线TPM工作设想｜简版</title>
+  <link rel="stylesheet" href="../document.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="mark" href="#top"><b>LD</b><span>Coding Data<br>Pipeline TPM</span></a>
+    <nav aria-label="目录">
+      <a href="#value"><i>01</i>TPM价值</a>
+      <a href="#badcase"><i>02</i>Bad Case闭环</a>
+      <a href="#strategy"><i>03</i>数据策略</a>
+    </nav>
+    <p>简版工作设想<br>李丹 · 2026</p>
+  </aside>
+
+  <main id="top">
+    <header class="cover">
+      <span class="label">INTERVIEW FOLLOW-UP · CONCISE VERSION</span>
+      <h1>Coding数据管线TPM<br><em>工作设想</em></h1>
+      <p>围绕三个问题：我能创造什么价值；如何把Bad Case归因做成团队能力；代码数据策略如何从通用代码模型升级到Agent Coding。</p>
+      <div class="thesis"><b>核心主线</b><span>把模型能力目标转成可生产、可验证、可追溯的数据资产，并通过训练与评测结果持续闭环。</span></div>
+    </header>
+
+    <section id="value">
+      <div class="section-title"><span>01</span><div><small>TPM VALUE</small><h2>我能创造什么价值</h2></div></div>
+      <p class="intro">我的价值不是替代算法、工程或数据策略专家，而是把不同专业团队接成一条可执行、可验证、可持续迭代的链路，并对端到端结果负责。</p>
+
+      <div class="value-list">
+        <article><b>目标翻译</b><p>把“提升某项模型能力”拆成任务切片、数据契约、环境要求、Verifier和验收指标。</p><span>产物：Task Spec · Schema · Acceptance Criteria</span></article>
+        <article><b>端到端交付</b><p>统一里程碑、RACI、依赖、SLA和风险升级机制，减少交接等待与返工。</p><span>产物：Roadmap · Dependency Map · Risk Board</span></article>
+        <article><b>质量前置</b><p>将环境复现、Verifier确定性、轨迹完整性、污染和血缘检查前置到数据准入。</p><span>产物：Quality Gate · Validator · Dataset Card</span></article>
+        <article><b>问题闭环</b><p>组织稳定复现、控制变量和跨版本验证，决定进入工程修复、训练还是Benchmark。</p><span>产物：Case Registry · Experiment Matrix · Regression Set</span></article>
+        <article><b>投入决策</b><p>以专项增益、通用回归和单位有效数据成本决定继续、调整或停止。</p><span>产物：Data ROI · Go / Adjust / Stop</span></article>
+      </div>
+
+      <h3 class="subhead">30 / 60 / 90天验证</h3>
+      <div class="three">
+        <article><span>01—30天</span><b>建立基线</b><p>跑通一条真实链路；冻结数据契约、RACI、失败分类与评测切片。</p><small>判断：问题是否真实、可量化、可试点</small></article>
+        <article><span>31—60天</span><b>交付闭环</b><p>上线Replay与核心Validator；让代表性Case进入标准流程，产出首批数据与Benchmark。</p><small>判断：链路是否可重复、结果是否可验证</small></article>
+        <article><span>61—90天</span><b>证明增量</b><p>对比周期、返工、成本与模型效果，并验证方案能否迁移到第二个场景。</p><small>判断：是否有效、可复制、值得扩量</small></article>
+      </div>
+
+      <div class="metrics"><b>建议验收指标</b><span>环境复现率目标 ≥95%</span><span>Verifier确定性目标 ≥98%</span><span>端到端周期挑战目标缩短20%—30%</span><span>P0/P1 Case证据链完整</span><span>专项正向、通用无显著退化</span></div>
+    </section>
+
+    <section id="badcase">
+      <div class="section-title"><span>02</span><div><small>BAD CASE LOOP</small><h2>归因链路与产品化</h2></div></div>
+      <div class="case-box"><div><small>真实现象</small><p>模型在客户POC前的线上流程中，执行到特定节点后，会固定跳转到其他几个步骤。</p></div><div><small>最终根因</small><p>多个指令使用高度同构的触发条件，模型缺少清晰状态边界，在长链执行中发生指令路由混淆。</p></div></div>
+
+      <div class="steps">
+        <article data-n="1"><b>环境对齐</b><p>对齐模型、Prompt、参数、工具和流程配置，排除线上与本地差异。</p></article>
+        <article data-n="2"><b>稳定复现</b><p>重复运行并保留Trace，确认错误节点、发生条件和失败率。</p></article>
+        <article data-n="3"><b>消融定位</b><p>删除无关指令、逐步缩减System Prompt，每次只改变一个变量。</p></article>
+        <article data-n="4"><b>改写验证</b><p>保持语义不变，将相似触发条件唯一化；结果稳定翻转后确认根因。</p></article>
+        <article data-n="5"><b>能力扩展</b><p>扩充相似度、冲突数量、步骤距离和上下文长度，形成专项Case池。</p></article>
+        <article data-n="6"><b>版本追溯</b><p>对比基座、历史与当前模型，确认缺陷来源并选择工程或训练方案。</p></article>
+      </div>
+
+      <h3 class="subhead">目标产品：Bad Case Workbench</h3>
+      <div class="flow">
+        <div><b>Case Intake</b><span>收集Trace与配置</span></div><i>→</i>
+        <div><b>Replay Lab</b><span>冻结环境并复现</span></div><i>→</i>
+        <div><b>Experiment</b><span>组织单变量实验</span></div><i>→</i>
+        <div><b>Evidence</b><span>审核根因与修复</span></div><i>→</i>
+        <div><b>Asset Registry</b><span>沉淀规则、训练与回归资产</span></div>
+      </div>
+      <p class="note"><b>产品化目标：</b>不是自动替代专家判断，而是保存环境、规范实验、审核证据并沉淀资产，让更多工程同学能够按同一方法完成可信归因。</p>
+    </section>
+
+    <section id="strategy">
+      <div class="section-title"><span>03</span><div><small>CODING DATA STRATEGY</small><h2>从通用代码模型到Agent Coding</h2></div></div>
+
+      <div class="shift">
+        <div><small>2024 · CODE MODEL</small><b>问题 → 代码答案</b><p>重点是代码知识覆盖、生成正确率、可执行性与任务弱项。</p></div>
+        <i>→</i>
+        <div><small>AGENTIC CODING</small><b>任务 → 环境中的完成态</b><p>重点是上下文、工具轨迹、失败恢复、独立验证与执行成本。</p></div>
+      </div>
+
+      <h3 class="subhead">2024通用代码数据策略</h3>
+      <div class="compact-table">
+        <div><b>语料治理</b><span>许可证、质量分层、仓库级去重、污染治理、语言与领域覆盖。</span></div>
+        <div><b>继续预训练</b><span>高质量代码、FIM/FIB、仓库上下文、文档—代码—测试联合样本。</span></div>
+        <div><b>SFT与偏好</b><span>生成、补全、修复、测试、重构；执行正确后再比较可维护性与安全性。</span></div>
+        <div><b>能力评测</b><span>Pass@k、编译与单测，并按语言、题型、难度、领域和上下文切片。</span></div>
+      </div>
+
+      <div class="contract"><small>AGENT DATA UNIT</small><p><b>Task</b><i>+</i><b>Repo &amp; Environment</b><i>+</i><b>Trajectory</b><i>+</i><b>Verifier</b><i>+</i><b>Outcome</b><i>+</i><b>Lineage</b></p></div>
+
+      <h3 class="subhead">Agent Coding首轮实验组合</h3>
+      <div class="portfolio">
+        <span><b>30%</b>仓库级工程任务</span><span><b>20%</b>终端与工具任务</span><span><b>15%</b>上下文检索与规划</span><span><b>15%</b>失败恢复轨迹</span><span><b>10%</b>视觉与多模态开发</span><span><b>10%</b>安全、效率与协作</span>
+      </div>
+      <p class="fineprint">比例仅作为后训练实验池的首轮起点；通过数据消融，以专项成功率增益、通用回归和每千条有效轨迹成本滚动调整。</p>
+
+      <h3 class="subhead">生产、训练与评测闭环</h3>
+      <div class="pipeline"><span>任务种子</span><i>→</i><span>环境与Verifier</span><i>→</i><span>多策略Rollout</span><i>→</i><span>轨迹质检</span><i>→</i><span>归因与训练路由</span><i>→</i><span>注册与回归</span></div>
+      <div class="route-table">
+        <div><b>继续预训练</b><span>知识、语言、框架或代码分布缺口</span></div><div><b>SFT</b><span>缺少稳定、正确的行为示范</span></div><div><b>DPO</b><span>同任务下存在可归因的方案优劣</span></div><div><b>RLVR</b><span>环境可复现、奖励可验证的长链任务</span></div><div><b>工程修复</b><span>Prompt、工具、路由、权限或运行环境缺陷</span></div>
+      </div>
+      <p class="note"><b>评测原则：</b>同时观察基础代码能力、Agent原子能力、端到端任务成功率和生产指标；只有专项提升、通用不退化且单位成本可接受，才进入扩量。</p>
+    </section>
+
+    <footer>
+      <blockquote>最终希望建立的不是一条“多生产数据”的管线，而是一套持续生产可复现、可验证、可归因，并能带来模型增益的数据系统。</blockquote>
+      <p>李丹 · Coding数据管线TPM候选人补充材料 · 基于公开信息的工作设想，不代表阶跃星辰内部方案。</p>
+    </footer>
+  </main>
+</div>
+</body>
+</html>
