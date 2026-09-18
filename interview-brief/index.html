@@ -40,10 +40,26 @@
       </div>
 
       <h3 class="subhead">30 / 60 / 90天验证</h3>
+      <p class="plan-note"><b>团队尚未完全成型时的原则：</b>不等待所有角色到齐，也不先建设大平台。先选一条最小真实链路，为现有角色和空缺角色明确正式或临时Owner、决策边界与升级路径，再用试点结果逐步固化组织接口。</p>
       <div class="three">
-        <article><span>01—30天</span><b>建立基线</b><p>跑通一条真实链路；冻结数据契约、RACI、失败分类与评测切片。</p><small>判断：问题是否真实、可量化、可试点</small></article>
-        <article><span>31—60天</span><b>交付闭环</b><p>上线Replay与核心Validator；让代表性Case进入标准流程，产出首批数据与Benchmark。</p><small>判断：链路是否可重复、结果是否可验证</small></article>
-        <article><span>61—90天</span><b>证明增量</b><p>对比周期、返工、成本与模型效果，并验证方案能否迁移到第二个场景。</p><small>判断：是否有效、可复制、值得扩量</small></article>
+        <article>
+          <span>01—30天 · 看清并对齐</span><b>建立最小基线与责任界面</b>
+          <ul><li>跑通<b>1条</b>需求—数据—训练—评测链路</li><li>审计<b>2—3批</b>数据和<b>10—15个</b>代表性Case</li><li>覆盖<b>100%核心角色</b>，空缺角色指定临时Owner</li><li>形成<b>Top 10</b>风险清单及Task Spec、Schema、RACI V0.1</li></ul>
+          <div class="risk"><strong>提前规避</strong><p>目标选错、职责空档、口径不一、没有基线，以及团队未成型时过早建设大平台。</p></div>
+          <small>Gate 1：问题可量化，责任有人接，试点能够启动</small>
+        </article>
+        <article>
+          <span>31—60天 · 跑通并前置</span><b>让最小闭环稳定运行</b>
+          <ul><li>不少于<b>30个</b>Case进入标准流程</li><li>环境复现率目标<b>≥95%</b>，Verifier确定性目标<b>≥98%</b></li><li>上线不少于<b>3类</b>核心Validator</li><li>试点任务<b>100%</b>绑定Owner、验收标准、版本与血缘</li></ul>
+          <div class="risk"><strong>提前规避</strong><p>数据交付后不可训练、环境漂移、质量问题末端暴露、同类Case重复返工。</p></div>
+          <small>Gate 2：数据可使用，过程可复现，结果可独立验证</small>
+        </article>
+        <article>
+          <span>61—90天 · 验证并复制</span><b>证明业务与模型增量</b>
+          <ul><li>端到端周期挑战目标缩短<b>20%—30%</b></li><li>P0/P1 Case证据链与版本血缘覆盖<b>100%</b></li><li>完成至少<b>1组</b>数据消融，专项正向、通用无显著退化</li><li>迁移至<b>第2个场景</b>，复用不少于<b>3项</b>核心资产</li></ul>
+          <div class="risk"><strong>提前规避</strong><p>无效扩量、模型局部提升但通用退化、重复造轮子，以及关键知识只留在个人经验中。</p></div>
+          <small>Gate 3：效率有改善，模型有信号，方案可以复制</small>
+        </article>
       </div>
 
       <div class="metrics"><b>建议验收指标</b><span>环境复现率目标 ≥95%</span><span>Verifier确定性目标 ≥98%</span><span>端到端周期挑战目标缩短20%—30%</span><span>P0/P1 Case证据链完整</span><span>专项正向、通用无显著退化</span></div>
