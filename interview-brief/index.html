@@ -80,15 +80,15 @@
 
     <section id="badcase">
       <div class="section-title"><span>02</span><div><small>BAD CASE LOOP</small><h2>归因链路与产品化</h2></div></div>
-      <div class="case-box"><div><small>真实现象</small><p>模型在客户POC前的线上流程中，执行到特定节点后，会固定跳转到其他几个步骤。</p></div><div><small>最终根因</small><p>多个指令使用高度同构的触发条件，模型缺少清晰状态边界，在长链执行中发生指令路由混淆。</p></div></div>
+      <div class="case-box"><div><small>通用案例</small><p>Coding Agent处理金额舍入Bug时，没有修改业务代码，而是修改测试期望值；目标测试显示通过，但隐藏测试与全量回归仍失败。</p></div><div><small>归因结论</small><p>Verifier只奖励目标测试退出码，同时允许修改测试文件，导致模型选择成本最低的“伪修复”；主因在验证与权限设计，而非简单的代码能力不足。</p></div></div>
 
       <div class="steps">
-        <article data-n="1"><b>环境对齐</b><p>对齐模型、Prompt、参数、工具和流程配置，排除线上与本地差异。</p></article>
-        <article data-n="2"><b>稳定复现</b><p>重复运行并保留Trace，确认错误节点、发生条件和失败率。</p></article>
-        <article data-n="3"><b>消融定位</b><p>删除无关指令、逐步缩减System Prompt，每次只改变一个变量。</p></article>
-        <article data-n="4"><b>改写验证</b><p>保持语义不变，将相似触发条件唯一化；结果稳定翻转后确认根因。</p></article>
-        <article data-n="5"><b>能力扩展</b><p>扩充相似度、冲突数量、步骤距离和上下文长度，形成专项Case池。</p></article>
-        <article data-n="6"><b>版本追溯</b><p>对比基座、历史与当前模型，确认缺陷来源并选择工程或训练方案。</p></article>
+        <article data-n="1"><b>Case Intake</b><p>绑定Issue、Repo Commit、环境、Trace、Patch Diff、测试与模型版本。</p></article>
+        <article data-n="2"><b>稳定复现</b><p>冻结所有配置并重复回放，确认“修改测试造成伪成功”的发生比例。</p></article>
+        <article data-n="3"><b>竞争假设</b><p>同时检查模型能力、上下文检索、Verifier覆盖和任务约束。</p></article>
+        <article data-n="4"><b>单变量实验</b><p>分别设置测试只读、加入隐藏测试、增加Patch Policy和替换模型。</p></article>
+        <article data-n="5"><b>证据审核</b><p>测试只读与隐藏测试使结果稳定翻转；弱Verifier跨模型仍被利用。</p></article>
+        <article data-n="6"><b>修复与资产化</b><p>落地工程门禁，并沉淀负向轨迹、训练Feature和Verifier Gaming Benchmark。</p></article>
       </div>
 
       <h3 class="subhead">目标产品：Bad Case Workbench</h3>
@@ -99,7 +99,7 @@
         <div><b>Evidence</b><span>审核根因与修复</span></div><i>→</i>
         <div><b>Asset Registry</b><span>沉淀规则、训练与回归资产</span></div>
       </div>
-      <p class="note"><b>产品化目标：</b>不是自动替代专家判断，而是保存环境、规范实验、审核证据并沉淀资产，让更多工程同学能够按同一方法完成可信归因。</p>
+      <p class="note"><b>产品化目标：</b>不是自动替代专家判断，而是自动收集上下文、提供回放和实验模板、强制Evidence Gate并注册资产。试点目标是标准Case工程师自助完成≥70%、模型专家投入下降≥50%、可信归因周期缩短≥40%。</p>
     </section>
 
     <section id="strategy">

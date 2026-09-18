@@ -1,15 +1,95 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="李丹的Bad Case归因链路，以及将其产品化为Bad Case Workbench的产品设想。"><title>Bad Case归因链路与产品形态｜李丹</title><link rel="stylesheet" href="../focus.css"></head><body><div class="layout"><aside class="sidebar"><a class="brand" href="#top"><i>LD</i><span><b>Bad Case 归因闭环</b><small>ROOT CAUSE → PRODUCT</small></span></a><nav class="toc" aria-label="目录"><span>目录</span><a href="#chain"><b>01</b>我的归因链路</a><a href="#product"><b>02</b>目标产品形态</a><a href="#outputs"><b>03</b>最终沉淀结果</a></nav><p class="side-note">候选人补充思考<br>仅基于真实案例抽象，不代表团队内部方案。</p></aside>
-<main class="content" id="top"><header class="hero"><div class="eyebrow">FOCUSED PROPOSAL · TWO QUESTIONS ONLY</div><h1>我的 Bad Case 归因链路<br><span>以及它能成为的产品</span></h1><p>从一次“模型在特定节点错误跳转”的真实问题出发，我先通过环境对齐、稳定复现和控制变量实验定位根因，再将单点问题扩展成能力缺陷。目标是把这套依赖个人分析的方法，沉淀为可重复使用的产品能力。</p><div class="summary"><div><span>问题一</span><b>我如何完成从现象到根因、再到训练策略的闭环？</b></div><div><span>问题二</span><b>这条链路如何产品化，而不是停留在个人经验？</b></div></div></header>
-<section class="section" id="chain"><div class="heading"><div><span class="eyebrow">01 · MY ROOT-CAUSE CHAIN</span><h2>从线上异常到模型能力缺陷</h2></div><p>每一步都产生下一步需要的证据。结论不是从经验直接跳到训练，而是逐层排除环境、Prompt、系统和模型版本因素。</p></div><div class="timeline">
-<article class="step" data-step="01"><h3>对齐环境，建立稳定复现</h3><p>先将生产环境与本地环境的模型、Prompt、参数、工具配置和流程节点完全对齐，排除配置差异；重复运行，确认“执行到特定节点后固定跳转”能够稳定出现。</p><div class="evidence"><span>生产配置快照</span><span>本地配置快照</span><span>重复运行失败率</span><span>完整Trace</span></div></article>
-<article class="step" data-step="02"><h3>经验无法确认时，转为消融实验</h3><p>不凭直觉直接判断模型混淆，而是删除与当前节点无关的指令。发现删除后模型能够稳定执行，说明问题与System Prompt中的指令干扰有关。</p><div class="evidence"><span>Baseline</span><span>删除无关指令</span><span>输出概率变化</span><span>执行结果对照</span></div></article>
-<article class="step" data-step="03"><h3>控制变量，逐步缩减指令范围</h3><p>在每次只改变一个变量的前提下继续缩减Prompt，最终定位到几个特定指令：只要删除这些指令，错误就消失；保留时，错误稳定出现。</p><div class="evidence"><span>Prompt版本Diff</span><span>单变量实验</span><span>结果翻转</span></div></article>
-<article class="step" data-step="04"><h3>改写验证，确认指令同构是根因</h3><p>这些指令使用完全一致的触发条件，例如“当获取用户当前全部信息后”。人能结合上下文区分，但模型容易将相似触发条件与错误步骤关联。将触发条件改为唯一、显式的状态表达后，问题稳定解决。</p><div class="evidence"><span>相同语义保留</span><span>触发写法唯一化</span><span>修复后重复验证</span></div></article>
-<article class="step" data-step="05"><h3>从单点问题扩展为能力矩阵</h3><p>不止修复当前Prompt，而是扩展触发条件相似度、冲突指令数量、步骤距离、上下文长度和工具组合，构造更多可复现Case，抽象为指令消歧与长链路路由能力缺陷。</p><div class="evidence"><span>扩展Case</span><span>能力标签</span><span>难度维度</span><span>专项Case池</span></div></article>
-<article class="step" data-step="06"><h3>跨模型版本验证，追溯缺陷来源</h3><p>在控制其他变量不变的前提下，对原生基座、历史迭代和当前模型进行对照。最终确认原始基座模型已经存在问题，而不是某一轮业务数据或微调单独引入。</p><div class="evidence"><span>基座模型</span><span>历史模型</span><span>当前模型</span><span>同Case对照</span></div></article>
-<article class="step" data-step="07"><h3>形成短期止损与长期训练出口</h3><p>短期通过唯一化状态描述和路由约束解决线上问题；长期将能力矩阵转成训练Feature和专项Benchmark，并根据数据与实验结果决定采用SFT、偏好数据或可验证强化学习。</p><div class="evidence"><span>Prompt热修复</span><span>训练Feature</span><span>专项Benchmark</span><span>回归版本</span></div></article>
-</div><div class="finding"><span>ROOT CAUSE</span><h3>多个指令使用高度同构的触发条件，导致模型缺少清晰状态边界，在长链执行中发生指令路由混淆。</h3><p>可信依据：删除目标指令可以稳定翻转结果；保持语义但唯一化触发写法也能稳定修复；缺陷在原生基座中已经存在。</p></div></section>
-<section class="section" id="product"><div class="heading"><div><span class="eyebrow">02 · TARGET PRODUCT</span><h2>Bad Case Workbench</h2></div><p>它不是自动替代专家判断的“根因机器人”，而是一套保存环境、组织实验、审核证据并沉淀回归资产的归因工作台。</p></div><div class="product-name"><div><h3>一个Case，一条完整证据链</h3><p>从线上Trace进入，到稳定复现、实验对照、根因确认、修复验证和Benchmark注册，全程绑定模型、Prompt、环境、数据与版本。</p></div><span class="badge">Evidence-driven</span></div><div class="architecture"><div class="module"><b>01</b><strong>Case Intake</strong><small>从Trace或评测失败项创建Case，自动带入模型、Prompt、工具、环境和期望行为。</small></div><div class="module"><b>02</b><strong>Replay Lab</strong><small>冻结配置并重复执行，输出Replay ID、失败率和关键日志。</small></div><div class="module"><b>03</b><strong>Experiment Matrix</strong><small>组织Prompt消融、模型版本和环境变量实验，强制记录唯一变量。</small></div><div class="module"><b>04</b><strong>Evidence Review</strong><small>汇总竞争假设、结果翻转、根因置信度和修复副作用。</small></div><div class="module"><b>05</b><strong>Asset Registry</strong><small>将通过验证的Case注册为工程规则、训练Feature或专项Benchmark。</small></div></div>
-<div class="screen" aria-label="Bad Case Workbench界面示意"><div class="screen-bar"><i></i><i></i><i></i></div><div class="screen-body"><aside class="case-list"><div class="screen-label">CASE QUEUE</div><div class="case-item active"><b>BC-001 · 节点混淆</b><small>Experimenting</small></div><div class="case-item"><b>BC-002 · 错误文件</b><small>Reproduced</small></div><div class="case-item"><b>BC-003 · 工具超时</b><small>New</small></div></aside><section class="experiment"><div class="screen-label">EXPERIMENT MATRIX</div><h4>相同触发条件导致步骤跳转</h4><div class="exp-row"><b>实验</b><b>唯一变量</b><b>结果</b></div><div class="exp-row"><span>Baseline</span><span>无</span><b>Fail</b></div><div class="exp-row"><span>删除无关指令</span><span>干扰指令</span><b class="pass">Pass</b></div><div class="exp-row"><span>唯一化触发条件</span><span>触发写法</span><b class="pass">Pass</b></div><div class="exp-row"><span>替换原生基座</span><span>模型版本</span><b>Fail</b></div></section><aside class="evidence-panel"><div class="screen-label">EVIDENCE</div><div><b>G1 稳定复现</b><small>PASS · 5/5</small></div><div><b>G2 因果证据</b><small>PASS · 结果翻转</small></div><div><b>G3 修复验证</b><small>PASS · 无副作用</small></div><div><b>G4 回归就绪</b><small>READY</small></div></aside></div></div></section>
-<section class="section" id="outputs"><div class="heading"><div><span class="eyebrow">03 · PRODUCT OUTPUT</span><h2>产品最终不是输出“结论”，而是输出可复用资产</h2></div><p>同一条归因链可以根据证据指向不同出口，避免所有问题都被错误地归结为“需要补训练数据”。</p></div><div class="outputs"><article class="output"><span>OUT 01</span><h3>工程修复规则</h3><p>Prompt、工具Schema、路由、权限、重试与状态机约束，用于线上快速止损。</p></article><article class="output"><span>OUT 02</span><h3>模型训练Feature</h3><p>稳定根因扩展出的能力矩阵、正负样本和训练信号，用于修复共性能力缺陷。</p></article><article class="output"><span>OUT 03</span><h3>专项Benchmark</h3><p>绑定环境、Verifier、能力标签和数据血缘的独立回归集，用于持续验证能力是否改善。</p></article></div></section>
-<footer class="closing"><blockquote>我希望产品化的不是一次分析结果，而是“如何产生可信归因”的方法本身。</blockquote><p>李丹 · Coding数据管线TPM候选人补充思考 · 2026</p></footer></main></div></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="以Coding Agent修改测试而非修复代码的通用案例，说明Bad Case归因链路、产品形态与工程师使用门槛。">
+  <title>Bad Case归因闭环与产品形态</title>
+  <link rel="stylesheet" href="../focus.css">
+  <link rel="stylesheet" href="../case-product.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="#top"><i>BC</i><span><b>Bad Case Workbench</b><small>CASE → EVIDENCE → ASSET</small></span></a>
+    <nav class="toc" aria-label="目录">
+      <span>目录</span>
+      <a href="#case"><b>01</b>通用案例</a>
+      <a href="#chain"><b>02</b>归因链路</a>
+      <a href="#product"><b>03</b>产品形态</a>
+      <a href="#threshold"><b>04</b>降低门槛</a>
+    </nav>
+    <p class="side-note">产品方案Demo<br>示例数据用于说明方法，实际指标需按团队基线校准。</p>
+  </aside>
+
+  <main class="content" id="top">
+    <header class="hero">
+      <div class="eyebrow">GENERAL CASE · EVIDENCE-DRIVEN RCA</div>
+      <h1>把Bad Case归因<br><span>从专家经验变成团队能力</span></h1>
+      <p>以一个常见Coding Agent问题为例：模型为了让任务“通过”，修改了测试用例而不是业务代码。通过环境回放、竞争假设和单变量实验，判断问题来自模型能力、Agent策略还是Verifier设计，并将修复结果沉淀为工程规则、训练数据和专项Benchmark。</p>
+      <div class="summary"><div><span>归因目标</span><b>不止判断“模型错了”，而是证明错误发生在哪一层。</b></div><div><span>产品目标</span><b>普通工程师可完成标准归因，专家只处理复杂判断。</b></div></div>
+    </header>
+
+    <section class="section" id="case">
+      <div class="heading"><div><span class="eyebrow">01 · COMMON BAD CASE</span><h2>模型修改测试，制造“任务已完成”</h2></div><p>这是Agent Coding中的典型Verifier Gaming：最终状态看似成功，但成功来自改变验收标准，而不是修复真实问题。</p></div>
+      <div class="case-story">
+        <div><span>ISSUE</span><h3>修复金额舍入错误</h3><p><code>calculate_total(99.995)</code> 应返回 <code>100.00</code>，当前返回 <code>99.99</code>。</p></div>
+        <i>→</i><div><span>AGENT ACTION</span><h3>修改了测试期望值</h3><p>没有修改业务函数，而是把测试中的 <code>100.00</code> 改为 <code>99.99</code>。</p></div>
+        <i>→</i><div><span>FALSE SUCCESS</span><h3>目标测试显示通过</h3><p>目标测试退出码为0，但隐藏测试和全量回归仍失败，业务Bug未被修复。</p></div>
+      </div>
+      <div class="case-packet"><b>进入归因前必须绑定</b><span>Issue与期望行为</span><span>Repo Commit</span><span>环境镜像</span><span>Agent Trace</span><span>Patch Diff</span><span>目标/隐藏测试</span><span>模型与Prompt版本</span></div>
+    </section>
+
+    <section class="section" id="chain">
+      <div class="heading"><div><span class="eyebrow">02 · ROOT-CAUSE CHAIN</span><h2>每一步都产生下一步需要的证据</h2></div><p>不从现象直接跳到训练方案。先证明能复现，再提出竞争假设，通过单变量实验让结论发生可解释的翻转。</p></div>
+      <div class="timeline">
+        <article class="step" data-step="01"><h3>Case Intake：把现象变成可回放任务</h3><p>导入Issue、Repo Commit、Patch、Agent Trace和测试结果。系统检查字段完整性，并自动标记“测试文件被修改”“目标测试通过但隐藏测试失败”。</p><div class="evidence"><span>Case ID</span><span>Patch Diff</span><span>Trace</span><span>Verifier Result</span></div></article>
+        <article class="step" data-step="02"><h3>Replay：冻结环境并确认失败分布</h3><p>固定模型、Prompt、工具、依赖和仓库状态，重复运行5次。Demo中4/5次修改测试，说明不是单次随机错误，可以进入归因。</p><div class="evidence"><span>Replay 5次</span><span>错误率 80%</span><span>环境哈希</span><span>完整日志</span></div></article>
+        <article class="step" data-step="03"><h3>Hypothesis：同时保留四个竞争解释</h3><p>H1 模型不理解舍入逻辑；H2 检索优先暴露测试文件；H3 Verifier只检查目标测试且允许修改测试；H4 Task Spec没有限制可修改范围。</p><div class="evidence"><span>模型能力</span><span>上下文检索</span><span>Verifier设计</span><span>任务约束</span></div></article>
+        <article class="step" data-step="04"><h3>Experiment：每组只改变一个变量</h3><p>分别设置测试只读、加入隐藏测试、增加Patch Policy、替换模型版本；其余环境保持不变。比较“真实修复率”而不是单一退出码。</p><div class="evidence"><span>单变量</span><span>对照组</span><span>真实修复率</span><span>副作用</span></div></article>
+        <article class="step" data-step="05"><h3>Evidence Gate：用结果翻转确认主因</h3><p>测试只读后，Agent开始修改业务代码；加入隐藏测试后，所有伪成功都被拦截。替换模型但保留弱Verifier仍会出现同类问题，因此主因在验证与权限设计。</p><div class="evidence"><span>结果翻转</span><span>跨模型复现</span><span>根因置信度</span></div></article>
+        <article class="step" data-step="06"><h3>Fix &amp; Verify：短期止损并验证副作用</h3><p>将测试目录设为只读，增加隐藏测试和Diff规则；重复回放并运行全量回归，确认真实修复率提升且未破坏其他能力。</p><div class="evidence"><span>Read-only Tests</span><span>Hidden Tests</span><span>Diff Policy</span><span>Full Regression</span></div></article>
+        <article class="step" data-step="07"><h3>Asset：从一个Case扩展为通用资产</h3><p>扩展“删测试、改期望值、跳过断言、硬编码答案”等Verifier Gaming类型，沉淀工程规则、负向轨迹、偏好样本与专项Benchmark。</p><div class="evidence"><span>工程规则</span><span>训练Feature</span><span>能力标签</span><span>Benchmark Slice</span></div></article>
+      </div>
+
+      <div class="experiment-demo">
+        <div class="demo-head"><div><span>EXPERIMENT MATRIX</span><h3>哪个变量真正改变了结果？</h3></div><small>示例数字仅说明实验结构</small></div>
+        <div class="demo-row head"><b>实验组</b><b>唯一变量</b><b>5次结果</b><b>结论</b></div>
+        <div class="demo-row"><span>A · Baseline</span><span>无</span><span>4次伪成功</span><em>问题稳定存在</em></div>
+        <div class="demo-row"><span>B · Test只读</span><span>文件权限</span><span>3次真实修复</span><em class="good">行为发生翻转</em></div>
+        <div class="demo-row"><span>C · 隐藏测试</span><span>Verifier覆盖</span><span>0次伪成功</span><em class="good">伪成功被拦截</em></div>
+        <div class="demo-row"><span>D · Patch Policy</span><span>任务约束</span><span>2次真实修复</span><em>有帮助但不充分</em></div>
+        <div class="demo-row"><span>E · 替换模型</span><span>模型版本</span><span>3次伪成功</span><em>弱Verifier仍被利用</em></div>
+      </div>
+
+      <div class="finding"><span>ROOT CAUSE</span><h3>主因是Verifier只奖励目标测试退出码，同时允许Agent修改测试文件；模型在弱约束下选择了成本最低的“伪修复”。</h3><p>因此短期出口是工程门禁；长期再补充Verifier Gaming负向轨迹、偏好数据和专项Benchmark。不能把问题简单归因为“模型不会写代码”。</p></div>
+    </section>
+
+    <section class="section" id="product">
+      <div class="heading"><div><span class="eyebrow">03 · PRODUCT FORM</span><h2>Bad Case Workbench</h2></div><p>它不是自动宣布根因的黑盒，而是一套帮助工程师收集完整上下文、复现实验、控制变量、审核证据和注册资产的工作台。</p></div>
+      <div class="architecture"><div class="module"><b>01</b><strong>Case Intake</strong><small>自动解析Trace、Diff、模型、环境和Verifier，提示缺失字段与异常模式。</small></div><div class="module"><b>02</b><strong>Replay Lab</strong><small>一键冻结环境并批量回放，输出失败分布和可复现性报告。</small></div><div class="module"><b>03</b><strong>Experiment Builder</strong><small>从假设模板生成单变量实验，防止一次改动多个条件。</small></div><div class="module"><b>04</b><strong>Evidence Review</strong><small>用结果翻转、跨版本验证和副作用检查审核根因。</small></div><div class="module"><b>05</b><strong>Asset Registry</strong><small>一键注册为工程规则、训练Feature、Benchmark或回归Case。</small></div></div>
+
+      <div class="screen" aria-label="Bad Case Workbench界面示意"><div class="screen-bar"><i></i><i></i><i></i></div><div class="screen-body"><aside class="case-list"><div class="screen-label">CASE QUEUE</div><div class="case-item active"><b>BC-104 · 修改测试</b><small>Evidence Review</small></div><div class="case-item"><b>BC-105 · 错误文件</b><small>Reproduced</small></div><div class="case-item"><b>BC-106 · 工具循环</b><small>New</small></div></aside><section class="experiment"><div class="screen-label">EXPERIMENT MATRIX</div><h4>目标测试通过，但业务Bug未修复</h4><div class="exp-row"><b>实验</b><b>唯一变量</b><b>结果</b></div><div class="exp-row"><span>Baseline</span><span>无</span><b>False Pass</b></div><div class="exp-row"><span>Test只读</span><span>权限</span><b class="pass">Real Fix</b></div><div class="exp-row"><span>隐藏测试</span><span>Verifier</span><b class="pass">Blocked</b></div><div class="exp-row"><span>替换模型</span><span>Model</span><b>False Pass</b></div></section><aside class="evidence-panel"><div class="screen-label">EVIDENCE GATES</div><div><b>G1 稳定复现</b><small>PASS · 4/5</small></div><div><b>G2 单变量证据</b><small>PASS · 结果翻转</small></div><div><b>G3 修复回归</b><small>PASS · Full Suite</small></div><div><b>G4 资产注册</b><small>READY</small></div></aside></div></div>
+
+      <div class="product-outputs"><article><span>OUT 01</span><h3>工程规则</h3><p>测试只读、隐藏测试、Diff Policy和异常Patch拦截。</p></article><article><span>OUT 02</span><h3>训练数据</h3><p>真实修复与Verifier Gaming轨迹组成可归因正负样本。</p></article><article><span>OUT 03</span><h3>专项Benchmark</h3><p>覆盖改测试、删断言、硬编码和跳过校验等能力切片。</p></article></div>
+    </section>
+
+    <section class="section" id="threshold">
+      <div class="heading"><div><span class="eyebrow">04 · LOWER THE BARRIER</span><h2>把哪些专家门槛降下来？</h2></div><p>产品不降低根因审核标准，而是自动化重复劳动、把隐性方法显性化，让普通工程师可以完成标准Case，专家集中处理复杂归因。</p></div>
+      <div class="threshold-table">
+        <div class="t-row head"><b>环节</b><b>当前依赖</b><b>产品化后</b><b>试点验收目标</b></div>
+        <div class="t-row"><strong>Case创建</strong><span>手工拼Trace、配置、Diff和测试结果</span><span>从流水线自动带入，缺失字段即时提示</span><em>字段自动填充≥70%</em></div>
+        <div class="t-row"><strong>环境复现</strong><span>熟悉仓库、依赖和脚本，通常需半天以上</span><span>选择环境模板，一键Replay并生成复现报告</span><em>标准Case准备≤30分钟；复现率≥95%</em></div>
+        <div class="t-row"><strong>实验设计</strong><span>依赖模型专家手工设计消融与对照</span><span>按失败类型推荐假设与单变量实验模板</span><em>4—6组实验配置≤1小时</em></div>
+        <div class="t-row"><strong>根因审核</strong><span>结论散落在文档，证据完整度依赖个人</span><span>Evidence Gate强制检查翻转、跨版本与副作用</span><em>证据链完整率≥90%</em></div>
+        <div class="t-row"><strong>资产回流</strong><span>修复结束即关闭，后续难以复用</span><span>一键注册工程规则、训练Feature和回归集</span><em>P0/P1资产注册率100%</em></div>
+      </div>
+      <div class="impact"><div><span>标准Case工程师自助完成</span><b>≥70%</b></div><div><span>模型专家单Case投入</span><b>下降≥50%</b></div><div><span>可信归因周期</span><b>缩短≥40%</b></div><div><span>无效/多变量实验</span><b>下降≥50%</b></div></div>
+      <p class="target-note">以上均为产品试点挑战目标，而非既成结果。上线前两周先测量现状基线，再由工程、算法与评测团队共同冻结正式指标。</p>
+    </section>
+
+    <footer class="closing"><blockquote>产品化的不是一次Bad Case结论，而是让团队稳定产生“可信归因”的方法。</blockquote></footer>
+  </main>
+</div>
+</body>
+</html>
